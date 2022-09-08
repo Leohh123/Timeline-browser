@@ -14,9 +14,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { Api, createFormData } from "../common/ApiTool";
 
-const MS_HOUR = 60 * 60 * 1000;
-const MS_MINUTE = 60 * 1000;
-
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -98,7 +95,7 @@ class Dashboard extends React.Component {
       url: Api("/task/start"),
       data: createFormData({
         title: this.state.title,
-        estimated: this.state.hour * MS_HOUR + this.state.minute * MS_MINUTE,
+        estimated: this.state.hour * 60 + this.state.minute,
       }),
     }).then(({ data: { code, message, data } }) => {
       if (code !== 0) {
