@@ -27,18 +27,19 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    const updateCount = (id) => {
+    const updateCount = () => {
       if (this.props.taskNow) {
         let d = new Date(this.props.taskNow.head);
-        let text = formatMilliseconds(new Date() - d);
+        let text = formatMilliseconds(Math.max(0, new Date() - d));
         this.setState({ countText: text });
         // console.log("updateCount", id, this.state.intervalId, this.state, new Date() - d);
       }
     };
     const f = () => {
+      updateCount();
       let id = setInterval(() => {
         if (this.state.intervalId === id) {
-          updateCount(id);
+          updateCount();
         } else {
           clearInterval(id);
         }
