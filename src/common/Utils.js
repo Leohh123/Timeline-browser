@@ -64,6 +64,10 @@ function formatDuration(iso8601Duration, fmt = "HH:MM:SS") {
   return fmt;
 }
 
+function formatTime(time) {
+  return time.split(":").slice(0, -1).join(":");
+}
+
 function pad2(x) {
   if (x < 10) return "0" + x;
   return x.toString();
@@ -78,4 +82,6 @@ function formatMilliseconds(x) {
   return `${pad2(x)}:${pad2(m)}:${pad2(s)}`;
 }
 
-export { timeOfDate, formatDate, formatDuration, formatMilliseconds };
+const DAY_CHAR = ["一", "二", "三", "四", "五", "六", "日"];
+
+export { timeOfDate, formatDate, formatDuration, formatTime, formatMilliseconds, DAY_CHAR };

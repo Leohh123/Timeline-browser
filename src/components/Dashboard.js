@@ -91,6 +91,10 @@ class Dashboard extends React.Component {
       alert("你还没说要干嘛呢~");
       return;
     }
+    if (this.state.hour === 0 && this.state.minute === 0) {
+      alert("你就是闪电侠吗？！");
+      return;
+    }
     axios({
       method: "POST",
       url: Api("/task/start"),

@@ -6,6 +6,7 @@ import Tab from "@mui/material/Tab";
 import ShutterSpeedIcon from "@mui/icons-material/ShutterSpeed";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import Timeline from "./components/Timeline";
 import Dashboard from "./components/Dashboard";
 import Misc from "./components/Misc";
@@ -14,6 +15,7 @@ import { Api } from "./common/ApiTool";
 import { formatDate, timeOfDate } from "./common/Utils";
 import cookies from "./common/CookieTool";
 import { Backdrop, CircularProgress } from "@mui/material";
+import Schedule from "./components/Schedule";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -156,6 +158,7 @@ class App extends React.Component {
         axios.get(Api("/stage/now")),
         axios.get(Api("/stage/next")),
         axios.get(Api("/task/now")),
+        axios.get(Api("/plan/list")),
       ])
       .then(
         axios.spread(
@@ -163,15 +166,17 @@ class App extends React.Component {
             { data: { data: objsData } },
             { data: { data: stageNowData } },
             { data: { data: stageNextData } },
-            { data: { data: taskNowData } }
+            { data: { data: taskNowData } },
+            { data: { data: planListData } }
           ) => {
-            // console.log(objsData, stageNowData, stageNextData, taskNowData);
+            // console.log(planListData);
             this.setState({
               objs: objsData,
               stageNow: stageNowData,
               stageNext: stageNextData,
               taskNow: taskNowData,
               lastUpdateTime: formatDate(new Date(), "HH:MM:SS"),
+              planList: planListData,
             });
             this.setState({ isFetching: false });
           }
@@ -206,6 +211,9 @@ class App extends React.Component {
           />
         </TabPanel>
         <TabPanel value={this.props.value} index={2}>
+          <Schedule planList={this.state.planList} onFetch={() => this.fetchData()} />
+        </TabPanel>
+        <TabPanel value={this.props.value} index={3}>
           <Misc />
         </TabPanel>
         <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={3}>
@@ -217,6 +225,7 @@ class App extends React.Component {
           >
             <Tab icon={<ShutterSpeedIcon />} label="时间线" />
             <Tab icon={<LibraryBooksIcon />} label="仪表盘" />
+            <Tab icon={<FlightTakeoffIcon />} label="预知者" />
             <Tab icon={<AutoAwesomeIcon />} label="碎纸屑" />
           </Tabs>
         </Paper>
