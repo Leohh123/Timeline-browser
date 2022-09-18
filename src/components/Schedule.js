@@ -51,13 +51,21 @@ class Schedule extends React.Component {
           Seer
         </Typography> */}
         <Divider>可用计划</Divider>
-        {this.props.planList["enabled"].length
-          ? this.props.planList["enabled"].map((o) => this.renderPlan(o))
-          : "（无）"}
+        {this.props.planList["enabled"].length ? (
+          this.props.planList["enabled"].map((o) => this.renderPlan(o))
+        ) : (
+          <Stack direction="row" justifyContent="center" alignItems="center">
+            <Typography color="text.secondary">（无）</Typography>
+          </Stack>
+        )}
         <Divider>不可用计划</Divider>
-        {this.props.planList["disabled"].length
-          ? this.props.planList["disabled"].map((o) => this.renderPlan(o, true))
-          : "（无）"}
+        {this.props.planList["disabled"].length ? (
+          this.props.planList["disabled"].map((o) => this.renderPlan(o, true))
+        ) : (
+          <Stack direction="row" justifyContent="center" alignItems="center">
+            <Typography color="text.secondary">（无）</Typography>
+          </Stack>
+        )}
       </Stack>
     );
   }

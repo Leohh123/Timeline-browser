@@ -1,3 +1,26 @@
+import {
+  amber,
+  blue,
+  blueGrey,
+  brown,
+  common,
+  cyan,
+  deepOrange,
+  deepPurple,
+  green,
+  grey,
+  indigo,
+  lightBlue,
+  lightGreen,
+  lime,
+  orange,
+  pink,
+  purple,
+  red,
+  teal,
+  yellow,
+} from "@mui/material/colors";
+
 function timeOfDate(date) {
   return new Date(date.toDateString()).getTime();
 }
@@ -84,4 +107,50 @@ function formatMilliseconds(x) {
 
 const DAY_CHAR = ["一", "二", "三", "四", "五", "六", "日"];
 
-export { timeOfDate, formatDate, formatDuration, formatTime, formatMilliseconds, DAY_CHAR };
+const COLORS = [
+  amber,
+  blue,
+  blueGrey,
+  brown,
+  // common,
+  cyan,
+  deepOrange,
+  deepPurple,
+  green,
+  // grey,
+  indigo,
+  lightBlue,
+  lightGreen,
+  lime,
+  orange,
+  pink,
+  purple,
+  red,
+  teal,
+  yellow,
+];
+
+// let cnt = 0;
+
+function selectCommentColor(name) {
+  // return COLORS[cnt++ % COLORS.length];
+  if (name === "Leohh") {
+    return blue;
+  }
+  let hash = 0;
+  let str = encodeURI(name);
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
+  }
+  return COLORS[hash % COLORS.length];
+}
+
+export {
+  timeOfDate,
+  formatDate,
+  formatDuration,
+  formatTime,
+  formatMilliseconds,
+  DAY_CHAR,
+  selectCommentColor,
+};

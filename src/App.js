@@ -34,96 +34,6 @@ function TabPanel(props) {
 }
 
 const EMPTY_STAGE = { title: "", estimated: "", actual: "" };
-// const EMPTY_TASK = { title: "", head: "", tail: "", estimated: "", actual: null, state: 0 };
-
-// function App() {
-//   const [objs, setObjs] = React.useState([]);
-//   const [stageNow, setStageNow] = React.useState(EMPTY_STAGE);
-//   const [stageNext, setStageNext] = React.useState(EMPTY_STAGE);
-//   const [taskNow, setTaskNow] = React.useState(null);
-//   const [lastUpdateTime, setLastUpdateTime] = React.useState("");
-//   const [token, setToken] = React.useState("");
-
-//   const lookBack = () => {
-//     const MS_DAY = 60 * 60 * 24;
-//     const MS_TODAY = timeOfDate(new Date()) / 1000;
-
-//     const lookDays = parseInt(cookies.get("look_days")) || 2;
-
-//     const from = MS_TODAY - (lookDays - 1) * MS_DAY;
-//     const to = MS_TODAY + MS_DAY;
-
-//     return axios.get(Api("/obj/list"), { params: { from, to } });
-//   };
-
-//   const fetchData = () => {
-//     axios
-//       .all([
-//         lookBack(),
-//         axios.get(Api("/stage/now")),
-//         axios.get(Api("/stage/next")),
-//         axios.get(Api("/task/now")),
-//       ])
-//       .then(
-//         axios.spread(
-//           (
-//             { data: objsData },
-//             { data: stageNowData },
-//             { data: stageNextData },
-//             { data: taskNowData }
-//           ) => {
-//             console.log(objsData, stageNowData, stageNextData, taskNowData);
-//             setObjs(objsData);
-//             setStageNow(stageNowData);
-//             setStageNext(stageNextData);
-//             setTaskNow(taskNowData);
-//             setLastUpdateTime(formatDate(new Date(), "HH:MM:SS"));
-//           }
-//         )
-//       );
-//   };
-
-//   const [value, setValue] = React.useState(0);
-//   const ref = React.useRef(null);
-
-//   React.useEffect(() => {
-//     if (value === 0) {
-//       window.scrollTo(0, document.body.scrollHeight);
-//     } else {
-//       window.scrollTo(0, 0);
-//     }
-//   }, [value]);
-
-//   const handleChange = (event, newValue) => {
-//     setValue(newValue);
-//   };
-
-//   return (
-//     <Box sx={{ pb: 7 }} ref={ref}>
-//       <TabPanel value={value} index={0}>
-//         <Timeline objs={objs} lastUpdateTime={lastUpdateTime} onFetch={() => this.fetchData()} />
-//       </TabPanel>
-//       <TabPanel value={value} index={1}>
-//         <Dashboard stageNow={stageNow} stageNext={stageNext} taskNow={taskNow} token={token} />
-//       </TabPanel>
-//       <TabPanel value={value} index={2}>
-//         <Misc token={token} setToken={setToken} />
-//       </TabPanel>
-//       <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={3}>
-//         <Tabs
-//           value={value}
-//           onChange={handleChange}
-//           aria-label="icon label tabs example"
-//           variant="fullWidth"
-//         >
-//           <Tab icon={<ShutterSpeedIcon />} label="时间线" />
-//           <Tab icon={<LibraryBooksIcon />} label="仪表盘" />
-//           <Tab icon={<AutoAwesomeIcon />} label="碎纸屑" />
-//         </Tabs>
-//       </Paper>
-//     </Box>
-//   );
-// }
 
 class App extends React.Component {
   constructor(props) {
@@ -150,7 +60,7 @@ class App extends React.Component {
     return axios.get(Api("/obj/list"), { params: { from, to } });
   }
 
-  fetchData() {
+  fetchData(callback = null) {
     this.setState({ isFetching: true });
     axios
       .all([
@@ -179,6 +89,9 @@ class App extends React.Component {
               planList: planListData,
             });
             this.setState({ isFetching: false });
+            if (callback) {
+              callback();
+            }
           }
         )
       );
@@ -199,7 +112,7 @@ class App extends React.Component {
           <Timeline
             objs={this.state.objs}
             lastUpdateTime={this.state.lastUpdateTime}
-            onFetch={() => this.fetchData()}
+            onFetch={(callback) => this.fetchData(callback)}
           />
         </TabPanel>
         <TabPanel value={this.props.value} index={1}>
@@ -207,20 +120,22 @@ class App extends React.Component {
             stageNow={this.state.stageNow}
             stageNext={this.state.stageNext}
             taskNow={this.state.taskNow}
-            onFetch={() => this.fetchData()}
+            onFetch={(callback) => this.fetchData(callback)}
           />
         </TabPanel>
         <TabPanel value={this.props.value} index={2}>
-          <Schedule planList={this.state.planList} onFetch={() => this.fetchData()} />
+          <Schedule
+            planList={this.state.planList}
+            onFetch={(callback) => this.fetchData(callback)}
+          />
         </TabPanel>
         <TabPanel value={this.props.value} index={3}>
-          <Misc />
+          <Misc onFetch={(callback) => this.fetchData(callback)} />
         </TabPanel>
         <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={3}>
           <Tabs
             value={this.props.value}
             onChange={(e, v) => this.props.setValue(v)}
-            aria-label="icon label tabs example"
             variant="fullWidth"
           >
             <Tab icon={<ShutterSpeedIcon />} label="时间线" />

@@ -1,6 +1,6 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import React from "react";
-import { formatDate, formatDuration, timeOfDate } from "../common/Utils";
+import { formatDate, formatDuration, selectCommentColor, timeOfDate } from "../common/Utils";
 // import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 // import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
@@ -22,6 +22,9 @@ class Timeline extends React.Component {
       case "task":
         return o.head;
 
+      case "comment":
+        return o.moment;
+
       default:
         break;
     }
@@ -42,18 +45,9 @@ class Timeline extends React.Component {
   }
 
   renderObj(o) {
-    // return (
-    //   <>
-    //     {o.type}
-    //     <br />
-    //   </>
-    // );
     switch (o.type) {
       case "stage":
         return (
-          // <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={2}>
-          //   <RadioButtonCheckedIcon />
-          // </Stack>
           <Box sx={{ borderLeft: "3px solid grey" }} pl={1}>
             <Typography color="text.secondary">
               {formatDate(new Date(o.actual))}（原定{formatDate(new Date(o.estimated))})
@@ -63,9 +57,6 @@ class Timeline extends React.Component {
         );
 
       case "task":
-        // import TaskAltIcon from "@mui/icons-material/TaskAlt";
-        // import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-        // import TrackChangesIcon from "@mui/icons-material/TrackChanges";
         return (
           <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={2}>
             {
@@ -81,10 +72,43 @@ class Timeline extends React.Component {
               <Typography color="text.secondary">
                 预计用时：{formatDuration(o.estimated)}
               </Typography>
-              <Typography color="text.secondary">实际用时：{formatDuration(o.actual)}</Typography>
-              <Typography color="text.secondary">{formatDate(new Date(o.tail))} 结束</Typography>
+              {o.state === 0 ? (
+                <Typography color="text.secondary">进行中</Typography>
+              ) : (
+                <>
+                  <Typography color="text.secondary">
+                    实际用时：{formatDuration(o.actual)}
+                  </Typography>
+                  <Typography color="text.secondary">
+                    {formatDate(new Date(o.tail))} 结束
+                  </Typography>
+                </>
+              )}
             </Box>
           </Stack>
+        );
+
+      case "comment":
+        const color = selectCommentColor(o.name);
+        return (
+          <Box
+            sx={{ borderLeft: `3px solid ${color[100]}`, backgroundColor: color[50] }}
+            px={1}
+            py={0.5}
+          >
+            <Stack direction="row" justifyContent="flex-start" alignItems="center">
+              <Typography variant="body2" color="text.secondary">
+                {o.content}
+              </Typography>
+            </Stack>
+            {o.name !== "Leohh" && (
+              <Stack direction="row" justifyContent="flex-end" alignItems="center">
+                <Typography variant="body2" color="text.secondary">
+                  {o.name}，{formatDate(new Date(o.moment), "HH:MM")}
+                </Typography>
+              </Stack>
+            )}
+          </Box>
         );
 
       case "divider":
