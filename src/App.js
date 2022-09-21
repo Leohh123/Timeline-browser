@@ -13,7 +13,7 @@ import Misc from "./components/Misc";
 import axios from "axios";
 import { Api } from "./common/ApiTool";
 import { formatDate, timeOfDate } from "./common/Utils";
-import cookies from "./common/CookieTool";
+import { getCookie } from "./common/CookieTool";
 import { Backdrop, CircularProgress } from "@mui/material";
 import Schedule from "./components/Schedule";
 
@@ -52,7 +52,7 @@ class App extends React.Component {
     const MS_DAY = 60 * 60 * 24;
     const MS_TODAY = timeOfDate(new Date()) / 1000;
 
-    const lookDays = parseInt(cookies.get("range")) || 2;
+    const lookDays = parseInt(getCookie("range")) || 2;
 
     const from = MS_TODAY - (lookDays - 1) * MS_DAY;
     const to = MS_TODAY + MS_DAY;

@@ -20,6 +20,7 @@ import {
   teal,
   yellow,
 } from "@mui/material/colors";
+import { createTheme } from "@mui/material/styles";
 
 function timeOfDate(date) {
   return new Date(date.toDateString()).getTime();
@@ -107,17 +108,17 @@ function formatMilliseconds(x) {
 
 const DAY_CHAR = ["一", "二", "三", "四", "五", "六", "日"];
 
-const COLORS = [
+const ALL_COLORS = [
   amber,
   blue,
   blueGrey,
   brown,
-  // common,
+  common,
   cyan,
   deepOrange,
   deepPurple,
   green,
-  // grey,
+  grey,
   indigo,
   lightBlue,
   lightGreen,
@@ -129,6 +130,42 @@ const COLORS = [
   teal,
   yellow,
 ];
+
+const COLORS = [
+  amber,
+  // blue,
+  // blueGrey,
+  // brown,
+  // common,
+  cyan,
+  // deepOrange,
+  // deepPurple,
+  // green,
+  // grey,
+  indigo,
+  // lightBlue,
+  lightGreen,
+  // lime,
+  // orange,
+  // pink,
+  purple,
+  red,
+  teal,
+  // yellow,
+];
+
+const COMMENT_THEME = (function () {
+  const palettes = {};
+  for (const c of ALL_COLORS) {
+    for (const key in c) {
+      palettes[c[key]] = { main: c[key] };
+    }
+  }
+  console.log("palettes", palettes);
+  return createTheme({
+    palette: palettes,
+  });
+})();
 
 // let cnt = 0;
 
@@ -153,4 +190,5 @@ export {
   formatMilliseconds,
   DAY_CHAR,
   selectCommentColor,
+  COMMENT_THEME,
 };

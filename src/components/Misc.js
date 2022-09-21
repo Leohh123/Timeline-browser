@@ -1,29 +1,30 @@
-import { Button, Divider, Link, Stack, TextField, Typography } from "@mui/material";
+import { Button, Divider, Link, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import { Api, createFormData } from "../common/ApiTool";
 import Config from "../common/Config";
-import cookies from "../common/CookieTool";
+import { getCookie, setCookie } from "../common/CookieTool";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { COMMENT_THEME, selectCommentColor } from "../common/Utils";
 
 class Misc extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      token: cookies.get("token"),
-      range: parseInt(cookies.get("range")) || 2,
-      name: cookies.get("name"),
+      token: getCookie("token"),
+      range: parseInt(getCookie("range")) || 2,
+      name: getCookie("name"),
       comment: "",
     };
   }
 
   handleSaveToken() {
-    cookies.set("token", this.state.token);
+    setCookie("token", this.state.token);
     alert("记住了Token喵");
   }
 
   handleSaveRange() {
-    cookies.set("range", this.state.range.toString());
+    setCookie("range", this.state.range.toString());
     alert("记住了Range喵");
   }
 
@@ -33,7 +34,7 @@ class Misc extends React.Component {
       return;
     }
     if (window.confirm("确定要把纸条贴上去吗？")) {
-      cookies.set("name", this.state.name);
+      setCookie("name", this.state.name);
       axios({
         method: "POST",
         url: Api("/comment/add"),
@@ -51,6 +52,12 @@ class Misc extends React.Component {
         });
       });
     }
+  }
+
+  get nameFieldColor() {
+    let color = selectCommentColor(this.state.name.trim());
+    console.log(color, this.state.name);
+    return color[700];
   }
 
   render() {
@@ -86,12 +93,15 @@ class Misc extends React.Component {
         <Typography gutterBottom variant="h5" sx={{ fontVariant: "all-small-caps" }}>
           Message
         </Typography>
-        <TextField
-          label="叫什么名字呢？"
-          variant="outlined"
-          value={this.state.name}
-          onChange={(ev) => this.setState({ name: ev.target.value })}
-        />
+        <ThemeProvider theme={COMMENT_THEME}>
+          <TextField
+            label="叫什么名字呢？"
+            variant="outlined"
+            value={this.state.name}
+            color={this.state.name.trim() === "" ? "primary" : this.nameFieldColor}
+            onChange={(ev) => this.setState({ name: ev.target.value })}
+          />
+        </ThemeProvider>
         <TextField
           label="留个纸条吧~"
           variant="outlined"
@@ -114,7 +124,7 @@ class Misc extends React.Component {
         </Typography>
         <Stack direction="row" alignItems="center">
           <Typography color="text.secondary">Developed by Leohh</Typography>
-          <FavoriteBorderIcon sx={{ fontSize: "1rem", px: 0.5 }} />
+          <FavoriteBorderIcon sx={{ fontSize: "1rem", px: 0.5, color: "text.secondary" }} />
           <Typography color="text.secondary">2022</Typography>
         </Stack>
       </Stack>
