@@ -22,6 +22,7 @@ class Dashboard extends React.Component {
       minute: 0,
       title: "",
       intervalId: null,
+      countMs: 0x3f3f3f3f,
       countText: "00:00:00",
     };
   }
@@ -30,8 +31,9 @@ class Dashboard extends React.Component {
     const updateCount = () => {
       if (this.props.taskNow) {
         let d = new Date(this.props.taskNow.head);
-        let text = formatMilliseconds(Math.max(0, new Date() - d));
-        this.setState({ countText: text });
+        let ms = Math.max(0, new Date() - d);
+        let text = formatMilliseconds(ms);
+        this.setState({ countMs: ms, countText: text });
         // console.log("updateCount", id, this.state.intervalId, this.state, new Date() - d);
       }
     };
@@ -125,7 +127,13 @@ class Dashboard extends React.Component {
   }
 
   handleCancel() {
-    if (window.confirm("确定要【取消】任务吗（危")) {
+    if (
+      window.confirm(
+        this.state.countMs < 1000 * 60
+          ? "一分钟内可以【撤销】任务哦，确定吗？"
+          : "超过一分钟了，确定要【取消】任务吗（危"
+      )
+    ) {
       axios.post(Api("/task/cancel")).then(({ data: { code, message, data } }) => {
         if (code !== 0) {
           alert(message);

@@ -13,7 +13,7 @@ class Misc extends React.Component {
     this.state = {
       token: getCookie("token"),
       range: parseInt(getCookie("range")) || 2,
-      name: getCookie("name"),
+      name: getCookie("name") || "",
       comment: "",
     };
   }
